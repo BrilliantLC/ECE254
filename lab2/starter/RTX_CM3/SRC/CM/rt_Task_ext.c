@@ -35,6 +35,7 @@ int rt_tsk_count_get(void)
 	int count = 0;
 	for (id = 0; id < os_maxtaskrun; id++)
 	{
+		// if task is found, increment count
 		if (os_active_TCB[id] != NULL)
 			count++;
 	}
@@ -53,34 +54,41 @@ OS_RESULT rt_tsk_get(OS_TID task_id, RL_TASK_INFO *p_task_info)
 		// find task in idle TCB
 		p_tcb = &os_idle_TCB;
 	}
-	else  // if task is not idle (ie active)
+	else // if task is not idle (ie active)
 	{
 		// find task in active TCB array
 		p_tcb = os_active_TCB[task_id - 1];
 	}
 
-	//
+	// get task info from p_tcb
 	p_task_info->task_id = p_tcb->task_id;
 	p_task_info->state = p_tcb->state;
 	p_task_info->prio = p_tcb->prio;
 	p_task_info->ptask = p_tcb->ptask;
 
-	if (p_tcb->state != 2)  // if status is not "RUNNING"
-	{
-		U32 sizeInAddr = (U16)os_stackinfo;
-		p_task_info->stack_usage = (U8)(((U32)(p_tcb->stack) + sizeInAddr - (U32)(p_tcb->tsk_stack)) * 100 / sizeInAddr);  // isn't top of stack of higher address?
-	}
-	else  // if "RUNNING"
-	{
-		U32 sizeInAddr = (U16)os_stackinfo;
-		p_task_info->stack_usage = (U8)(((U32)(p_tcb->stack) + sizeInAddr - (U32)rt_get_PSP()) * 100 / sizeInAddr);
-	}
 	if (p_task_info->state == 0)
 	{
+		// no usage since the task is inactive
+		p_task_info->stack_usage = 0;
 		return OS_R_NOK;
 	}
 	else
 	{
+		if (p_tcb->state != 2) // if status is not "RUNNING"
+		{
+			// size of memory assigned to the stack
+			U32 sizeInAddr = (U16)os_stackinfo;
+			// occupied / total * 100 = percentage
+			// address of the top of stack for tasks not running is stored in tsk_stack
+			p_task_info->stack_usage = (U8)(((U32)(p_tcb->stack) + sizeInAddr - (U32)(p_tcb->tsk_stack)) * 100 / sizeInAddr); // isn't top of stack of higher address?
+		}
+		else // if "RUNNING"
+		{
+			U32 sizeInAddr = (U16)os_stackinfo;
+			//  rt_get_PSP() returns the address of the top of stack for running tasks
+			p_task_info->stack_usage = (U8)(((U32)(p_tcb->stack) + sizeInAddr - (U32)rt_get_PSP()) * 100 / sizeInAddr);
+		}
+
 		return OS_R_OK;
 	}
 }

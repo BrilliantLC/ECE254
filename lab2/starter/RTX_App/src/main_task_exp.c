@@ -103,6 +103,7 @@ __task void task3(void)
 	while (1)
 	{
 		printf("Running task3...\n");
+		printf("Count: %d", os_tsk_count_get());
 		os_dly_wait(10);
 	}
 }

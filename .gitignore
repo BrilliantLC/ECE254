@@ -44,3 +44,7 @@ manual/*.toc
 # backup from from editor
 *~
 *.bak
+
+# mac file system
+.DS_Store
+*.DS_Store
