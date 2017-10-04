@@ -15,7 +15,8 @@
 
 #define NUM_FNAMES 4
 
-struct func_info {
+struct func_info
+{
   void (*p)();   /* function pointer */
   char name[16]; /* name of the function */
 };
@@ -43,8 +44,10 @@ struct func_info g_task_map[NUM_FNAMES] = {
     {init, "init"}};
 
 /* no local variables defined, use one global var */
-__task void task1(void) {
-  for (;;) {
+__task void task1(void)
+{
+  for (;;)
+  {
     g_counter++;
   }
 }
@@ -52,8 +55,10 @@ __task void task1(void) {
 /*--------------------------- task2 -----------------------------------*/
 /* checking states of all tasks in the system                          */
 /*---------------------------------------------------------------------*/
-__task void task2(void) {
-  while (1) {
+__task void task2(void)
+{
+  while (1)
+  {
     U8 i = 1;
     RL_TASK_INFO task_info;
 
@@ -61,8 +66,10 @@ __task void task2(void) {
     printf("TID\tNAME\t\tPRIO\tSTATE   \t%%STACK\n");
     os_mut_release(g_mut_uart);
 
-    for (i = 0; i < 5; i++) { // this is a lazy way of doing loop.
-      if (os_tsk_get(i + 1, &task_info) == OS_R_OK) {
+    for (i = 0; i < 5; i++)
+    { // this is a lazy way of doing loop.
+      if (os_tsk_get(i + 1, &task_info) == OS_R_OK)
+      {
         os_mut_wait(g_mut_uart, 0xFFFF);
         printf("%d\t%s\t\t%d\t%s\t%d%%\n", task_info.task_id,
                fp2name(task_info.ptask, g_tsk_name), task_info.prio,
@@ -71,7 +78,8 @@ __task void task2(void) {
       }
     }
 
-    if (os_tsk_get(0xFF, &task_info) == OS_R_OK) {
+    if (os_tsk_get(0xFF, &task_info) == OS_R_OK)
+    {
       os_mut_wait(g_mut_uart, 0xFFFF);
       printf("%d\t%s\t\t%d\t%s\t%d%%\n", task_info.task_id,
              fp2name(task_info.ptask, g_tsk_name), task_info.prio,
@@ -84,22 +92,28 @@ __task void task2(void) {
   // for(;;);
 }
 
-__task void task3(void) {
-  while (1) {
+__task void task3(void)
+{
+  while (1)
+  {
     printf("Running task3...\n");
     os_dly_wait(10);
   }
 }
 
-__task void task4(void) {
-  while (1) {
+__task void task4(void)
+{
+  while (1)
+  {
     printf("Running task4...\n");
     os_dly_wait(20);
   };
 }
 
-__task void task5(void) {
-  while (1) {
+__task void task5(void)
+{
+  while (1)
+  {
     printf("Running task5...\n");
     os_dly_wait(50);
   }
@@ -108,7 +122,8 @@ __task void task5(void) {
 /*--------------------------- init ------------------------------------*/
 /* initialize system resources and create other tasks                  */
 /*---------------------------------------------------------------------*/
-__task void init(void) {
+__task void init(void)
+{
   os_mut_init(&g_mut_uart);
 
   os_mut_wait(g_mut_uart, 0xFFFF);
@@ -150,8 +165,10 @@ __task void init(void) {
  *               buffer to be allocated by the caller
  * @return:the string starting address
  */
-char *state2str(unsigned char state, char *str) {
-  switch (state) {
+char *state2str(unsigned char state, char *str)
+{
+  switch (state)
+  {
   case INACTIVE:
     strcpy(str, "INACTIVE");
     break;
@@ -194,24 +211,29 @@ char *state2str(unsigned char state, char *str) {
  * @param: str the buffer to return the function name
  * @return: the function name string starting address
  */
-char *fp2name(void (*p)(), char *str) {
+char *fp2name(void (*p)(), char *str)
+{
   int i;
   unsigned char is_found = 0;
 
-  for (i = 0; i < NUM_FNAMES; i++) {
-    if (g_task_map[i].p == p) {
+  for (i = 0; i < NUM_FNAMES; i++)
+  {
+    if (g_task_map[i].p == p)
+    {
       str = strcpy(str, g_task_map[i].name);
       is_found = 1;
       break;
     }
   }
-  if (is_found == 0) {
+  if (is_found == 0)
+  {
     strcpy(str, "ghost");
   }
   return str;
 }
 
-int main(void) {
+int main(void)
+{
   SystemInit(); /* initialize the LPC17xx MCU */
   uart0_init(); /* initilize the first UART */
 

@@ -30,11 +30,13 @@
 /*--------------------------- rt_tsk_count_get ------------------------------*/
 /* added in ECE254 lab keil_rtx */
 // return number of active tasks
-int rt_tsk_count_get(void) {
+int rt_tsk_count_get(void)
+{
   /* Add your own code here. Change the following line accordingly */
   int id;
   int count = 0;
-  for (id = 0; id < os_maxtaskrun; id++) {
+  for (id = 0; id < os_maxtaskrun; id++)
+  {
     if (os_active_TCB[id] != NULL)
       count++;
   }
@@ -43,12 +45,16 @@ int rt_tsk_count_get(void) {
 
 /*--------------------------- rt_tsk_get ------------------------------------*/
 /* added in ECE254 lab keil_proc */
-OS_RESULT rt_tsk_get(OS_TID task_id, RL_TASK_INFO *p_task_info) {
+OS_RESULT rt_tsk_get(OS_TID task_id, RL_TASK_INFO *p_task_info)
+{
   /* Add your own code here. Change the following lines accordingly */
   P_TCB p_tcb;
-  if (task_id == os_idle_TCB.task_id) {
+  if (task_id == os_idle_TCB.task_id)
+  {
     p_tcb = &os_idle_TCB;
-  } else {
+  }
+  else
+  {
     p_tcb = os_active_TCB[task_id - 1];
   }
   p_task_info->task_id = p_tcb->task_id;
@@ -56,20 +62,26 @@ OS_RESULT rt_tsk_get(OS_TID task_id, RL_TASK_INFO *p_task_info) {
   p_task_info->prio = p_tcb->prio;
   p_task_info->ptask = p_tcb->ptask;
 
-  if (p_tcb->state != 2) {
+  if (p_tcb->state != 2)
+  {
     U32 sizeInAddr = (U16)os_stackinfo;
     p_task_info->stack_usage =
         (U8)(((U32)(p_tcb->stack) + sizeInAddr - (U32)(p_tcb->tsk_stack)) *
              100 / sizeInAddr);
-  } else {
+  }
+  else
+  {
     U32 sizeInAddr = (U16)os_stackinfo;
     p_task_info->stack_usage =
         (U8)(((U32)(p_tcb->stack) + sizeInAddr - (U32)rt_get_PSP()) * 100 /
              sizeInAddr);
   }
-  if (p_task_info->state == 0) {
+  if (p_task_info->state == 0)
+  {
     return OS_R_NOK;
-  } else {
+  }
+  else
+  {
     return OS_R_OK;
   }
 }
