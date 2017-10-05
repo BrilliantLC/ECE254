@@ -35,8 +35,14 @@ int rt_tsk_count_get(void)
 	for (id = 0; id < os_maxtaskrun; id++)
 	{
 		// if task is found, increment count
-		if (os_active_TCB[id] != NULL)
+		if (os_active_TCB[id] != NULL) {
 			count++;
+		}
+	}
+	// if there is an idle task, add one
+	if (os_idle_TCB.state != INACTIVE)
+	{
+		count++;
 	}
 	return count;
 }
