@@ -30,7 +30,6 @@
 /* added in ECE254 lab keil_rtx */
 int rt_tsk_count_get(void)
 {
-	/* Add your own code here. Change the following line accordingly */
 	int id;
 	int count = 0;
 	for (id = 0; id < os_maxtaskrun; id++)
@@ -46,41 +45,38 @@ int rt_tsk_count_get(void)
 /* added in ECE254 lab keil_proc */
 OS_RESULT rt_tsk_get(OS_TID task_id, RL_TASK_INFO *p_task_info)
 {
-	/* Add your own code here. Change the following lines accordingly */
 	P_TCB p_tcb;
-	// if task is idle
+
+	// if task is idle, get task in idle TCB
 	if (task_id == os_idle_TCB.task_id)
 	{
-		// find task in idle TCB
 		p_tcb = &os_idle_TCB;
 	}
-	else // if task is not idle (ie active)
+	else // if task is not idle, look for task in active TCB array
 	{
-		// find task in active TCB array
 		p_tcb = os_active_TCB[task_id - 1];
 	}
 
-	// get task info from p_tcb
-	p_task_info->task_id = p_tcb->task_id;
-	p_task_info->state = p_tcb->state;
-	p_task_info->prio = p_tcb->prio;
-	p_task_info->ptask = p_tcb->ptask;
-
-	if (p_task_info->state == 0)
+	// if state is unknown
+	if (p_tcb->state >= 10)
 	{
-		// no usage since the task is inactive
-		p_task_info->stack_usage = 0;
 		return OS_R_NOK;
 	}
 	else
 	{
-		if (p_tcb->state != 2) // if status is not "RUNNING"
+		// get task info from p_tcb
+		p_task_info->task_id = p_tcb->task_id;
+		p_task_info->state = p_tcb->state;
+		p_task_info->prio = p_tcb->prio;
+		p_task_info->ptask = p_tcb->ptask;
+
+		// if status is not "RUNNING"
+		if (p_tcb->state != 2)
 		{
 			// size of memory assigned to the stack
 			U32 sizeInAddr = (U16)os_stackinfo;
-			// occupied / total * 100 = percentage
 			// address of the top of stack for tasks not running is stored in tsk_stack
-			p_task_info->stack_usage = (U8)(((U32)(p_tcb->stack) + sizeInAddr - (U32)(p_tcb->tsk_stack)) * 100 / sizeInAddr); // isn't top of stack of higher address?
+			p_task_info->stack_usage = (U8)(((U32)(p_tcb->stack) + sizeInAddr - (U32)(p_tcb->tsk_stack)) * 100 / sizeInAddr);
 		}
 		else // if "RUNNING"
 		{

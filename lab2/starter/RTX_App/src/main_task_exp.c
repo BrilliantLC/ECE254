@@ -62,67 +62,84 @@ __task void task2(void)
 		U8 i = 1;
 		RL_TASK_INFO task_info;
 
-		os_mut_wait(g_mut_uart, 0xFFFF);
+		os_mut_wait(g_mut_uart, 0xFFFF); // wrapping whole section instead of each line
 		printf("TID\tNAME\t\tPRIO\tSTATE   \t%%STACK\n");
-		os_mut_release(g_mut_uart);
+		//os_mut_release(g_mut_uart);
 
-		for (i = 0; i < 5; i++)
-		{ // this is a lazy way of doing loop.
+		for (i = 0; i < 6; i++) // we only have 5 tasks for this lab
+		{												// this is a lazy way of doing loop.
 			if (os_tsk_get(i + 1, &task_info) == OS_R_OK)
 			{
-				os_mut_wait(g_mut_uart, 0xFFFF);
+				//os_mut_wait(g_mut_uart, 0xFFFF);
 				printf("%d\t%s\t\t%d\t%s\t%d%%\n",
 							 task_info.task_id,
 							 fp2name(task_info.ptask, g_tsk_name),
 							 task_info.prio,
 							 state2str(task_info.state, g_str),
 							 task_info.stack_usage);
-				os_mut_release(g_mut_uart);
+				//os_mut_release(g_mut_uart);
 			}
 		}
 
 		if (os_tsk_get(0xFF, &task_info) == OS_R_OK)
 		{
-			os_mut_wait(g_mut_uart, 0xFFFF);
+			//os_mut_wait(g_mut_uart, 0xFFFF);
 			printf("%d\t%s\t\t%d\t%s\t%d%%\n",
 						 task_info.task_id,
 						 fp2name(task_info.ptask, g_tsk_name),
 						 task_info.prio,
 						 state2str(task_info.state, g_str),
 						 task_info.stack_usage);
-			os_mut_release(g_mut_uart);
+			//os_mut_release(g_mut_uart);
 		}
+
+		os_mut_release(g_mut_uart); // wrapping whole section instead of each line
 		os_dly_wait(20);
 	}
-
-	//for(;;);
 }
 
+// prints the number of active tasks
 __task void task3(void)
 {
 	while (1)
 	{
-		printf("Running task3...\n");
-		printf("Count: %d", os_tsk_count_get());
-		os_dly_wait(10);
+		os_mut_wait(g_mut_uart, 0xFFFF);
+		printf("Running task3...Number of tasks: %d\n", os_tsk_count_get());
+		os_mut_release(g_mut_uart);
+
+		os_dly_wait(13);
 	}
 }
 
+// prints whether rt_tsk_get would return OS_R_OK or OS_R_NOK for TID1
 __task void task4(void)
 {
 	while (1)
 	{
-		printf("Running task4...\n");
-		os_dly_wait(20);
-	};
+		RL_TASK_INFO task_info;
+		OS_RESULT result = rt_tsk_get(1, &task_info);
+
+		os_mut_wait(g_mut_uart, 0xFFFF);
+		printf("Running task4...TID1 is %s\n", (result == OS_R_OK) ? "OK." : "NOT OK.");
+		os_mut_release(g_mut_uart);
+
+		os_dly_wait(19);
+	}
 }
 
+// prints the the task's own priority (with a sad face)
 __task void task5(void)
 {
 	while (1)
 	{
-		printf("Running task5...\n");
-		os_dly_wait(50);
+		RL_TASK_INFO task_info;
+		OS_RESULT result = rt_tsk_get(6, &task_info);
+
+		os_mut_wait(g_mut_uart, 0xFFFF);
+		printf("Running task5...My priority is %d... :(\n", task_info.prio);
+		os_mut_release(g_mut_uart);
+
+		os_dly_wait(29);
 	}
 }
 
@@ -147,7 +164,7 @@ __task void init(void)
 	printf("init: created task2 with TID %d\n", g_tid);
 	os_mut_release(g_mut_uart);
 
-	g_tid = os_tsk_create(task3, 1); /* task 3 at priority 2 */
+	g_tid = os_tsk_create(task3, 2); /* task 3 at priority 2 */
 	os_mut_wait(g_mut_uart, 0xFFFF);
 	printf("init: created task3 with TID %d\n", g_tid);
 	os_mut_release(g_mut_uart);
