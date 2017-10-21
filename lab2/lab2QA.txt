@@ -1,0 +1,20 @@
+1.
+  a. _declare_box(mympool, 12, 20)
+  b. _init_box(mympool, sizeof(mympool), 12)
+  c. rt_alloc_box_s(void *p_mpool)
+  d. rt_free_box_s(void *p_mpool, void *box)
+
+2. Return value upon completion of a wait
+
+3.
+  a. put task identified with "p_task" into list ordered by priority.
+  b. get task at head of list
+  
+4.
+  a. block running task and choose next ready task. 
+  b. dispatch next task if any identified or dispatch highest ready task
+
+5. p_TCB->ret_val = OS_R_MBX;
+OS_R_MBX is set only when receiver is blocked and resumed. Context switching is happening in HAL_CM3.c assembly code rather than in Kernel C code. Only sender gets to set the value of OS_R_MBX when receiver is blocked and resumed. Since context switching is happening in assembly, we cannot set the value of OS_R_MBX.
+
+6. OS_XCB
