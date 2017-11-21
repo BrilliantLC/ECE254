@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "common.h": "c",
+        "stat.h": "c",
+        "stdbool.h": "c",
+        "mqueue.h": "c",
+        "unistd.h": "c",
+        "stdio.h": "c"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Disabled"
+}
