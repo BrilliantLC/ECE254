@@ -1,5 +1,5 @@
 all:
-	@gcc -o pproduce multi_process.c -lrt -lm -pthread
+	@gcc -o pproduce multi_process.c -lrt -lm
 	@gcc -o tproduce multi_thread.c -lrt -lm -pthread
 
 .PHONY: clean

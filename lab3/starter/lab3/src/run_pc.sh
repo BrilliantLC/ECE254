@@ -1,16 +1,15 @@
 #!/bin/sh 
 ############################################################################
-# File Name  : run_pc.sh
-# Date       : 2015/11/30
+# File Name  : run_lab3.sh
+# Date       : Nov. 2013
 # Author     : Yiqing Huang 
 # Usage      : Name your producer executable as "produce" and put it in the
 #              same directory where you put this shell script.
 #              Type
-#	       chomod 700 ./run_pc.sh
-#              ./run_pc.sh 
+#              ./run_lab3.sh 
 #             
 # Course Name: ECE254 Operating Systems and System Programming
-# Description: Lab porject utility - extracting timing info.
+# Description: Lab3 utility - extracting timing info.
 #              The script assumes the following output format at stdout
 #              from the producer process.
 #  -------------------------------------------
@@ -23,16 +22,16 @@
 #  The script reads the last line where the timing info is and
 #  then extract the S and output to a file. 
 #  The outputfile naming convention is: N*_B*_P*_C*.dat.
-#  The script then compute two tables:
+#  The script then compute for tables.
 #  tb1_$$.txt: average system execution time
 #  tb2_$$.txt: standard deviation of system execution time
 #  where $$ is the pid of process that executing this shell script.
 #############################################################################
 PROG="./pproduce"
-N="100"
-B="4"
-P="1"
-C="1"
+N="100 398"
+B="4 8"
+P="1 2 3"
+C="1 2 3"
 X=500
 
 exec_producer () 
@@ -79,8 +78,8 @@ gen_data ()
 			do
 				for c in $C
 				do
-					if ([ $c == 1 ] || [ $p == 1 ]); then
-						if !([ $n == 398 -a $b == 4 ]); then
+					if [ $c = 1 ] || [ $p = 1 ]; then
+						if !([ $n = 398 -a $b = 4 ]); then
 							exec_producer $PROG $n $b $p $c $X
 						fi
 					fi
@@ -141,8 +140,8 @@ gen_table ()
 			do
 				for c in $C
 				do
-					if [ $c == 1 ] || [ $p == 1 ]; then
-						if !([ $n == 398 -a $b == 4 ]); then
+					if [ $c = 1 ] || [ $p = 1 ]; then
+						if !([ $n = 398 -a $b = 4 ]); then
 							i=1
 							while [ ${i} -le ${NUM_TBS} ]
 							do

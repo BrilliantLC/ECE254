@@ -36,7 +36,6 @@ int sender(int n, int b, int p, int id, mqd_t qdes)
 
     }
     exit(0);
-    //abort();
 }
 
 int receiver(int n, int cid, mqd_t qdes)
@@ -62,15 +61,14 @@ int receiver(int n, int cid, mqd_t qdes)
             else
             {
                 // calculate square root
-                int sq = sqrt(i);
-                if (sq * sq == i)
+                int sr = sqrt(i);
+                if (sr * sr == i)
                 {
-                    printf("%d %d %d\n", cid, i, sq);
+                    printf("%d %d %d\n", cid, i, sr);
                 }
             }
         }
         exit(0);
-        //abort();
     }
 
 }
@@ -128,10 +126,11 @@ int main(int argc, char *argv[])
     // wait for all children to finish
     wait(NULL);
 
+
     // calculate execution time
     gettimeofday(&tv, NULL);
     t2 = tv.tv_sec + tv.tv_usec / 1000000.0;
-    printf("System execution time: %.6lfs.\n", t2 - t1);
+    printf("System execution time: %.6lf seconds\n", t2 - t1);
 
     // close and unlink the mailbox
     if (mq_close(qdes) == -1)

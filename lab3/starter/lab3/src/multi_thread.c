@@ -18,38 +18,45 @@
 sem_t lock;
 sem_t spaces;
 sem_t items;
+sem_t ndone;
 
 int *buffer;
 int pcount = 0;
 int ccount = 0;
+bool pfinished=false;
 
 int n, b, p, c;
 
 struct producerid{int item;};
 struct consumerid{int item;};
 
+
 void *producer(void *id)
 {
     struct producerid *elem = id;
     int elemv = elem->item;
-    printf("elemv:%d, n:%d\n", elemv, n);
+    // printf("elemv is:%d\n",elemv);
+
     for (int i = 0; i < n; i++)
     {
-        printf("i:%d\n",i);
         if (i % p == elemv)
         {   
             sem_wait(&spaces);
 
             sem_wait(&lock);
             buffer[pcount] = i;
-            printf("added %d\n", i);
             pcount++;
-            printf("pcount is:%d\n",pcount);
 
+        //    printf("pcount is:%d\n",pcount);
+// if (pcount == n)
+//             {
+//                 pfinished = true;
+//             } 
             sem_post(&lock);
 
             sem_post(&items);
         }
+        
     }
     // add all corresponding integers to buffer
     // printf(elemv);
@@ -72,24 +79,35 @@ void *consumer(void *cid)
 {
     int elem;
     int sr;
-    // struct consumerid *elem = cid;
-    // int id = elem->d
-    printf("sup\n");
+
+    struct consumerid *elemid = cid;
+    int id = elemid->item;
+
     while (ccount < n)
     {
+        sem_wait(&ndone);
+        if (ccount == n)
+        {
+            sem_post(&ndone);
+            break;
+        }
         sem_wait(&items);
-
         sem_wait(&lock);
         int elem = buffer[ccount];
         ccount++;
         sr = sqrt(elem);
         if (sr * sr == elem)
         {
-            printf("%p %d %d\n", (int *)cid, elem, sr);
+            printf("%d %d %d\n", id, elem, sr);
         }
+        // if (ccount != n)
+        // {
+        //     sem_post(&ndone);
+        // }
         sem_post(&lock);
 
         sem_post(&spaces);
+        sem_post(&ndone);
     }
 }
 
@@ -112,6 +130,8 @@ int main(int argc, char *argv[])
     sem_init(&lock, 0, 1);
     sem_init(&items, n, 0);
     sem_init(&spaces, 0, b);
+    sem_init(&ndone, 0, 1);
+    // sem_init(&empty)
 
     struct timeval tv;
     double t1;
@@ -128,7 +148,7 @@ int main(int argc, char *argv[])
     pthread_t producers[p], consumers[c];
 
     int id, cid;
-    printf("y1\n");
+
     // save id for producer and consumer to be passed to the member functions
     struct producerid pcid[p];
     struct consumerid cmid[c];
@@ -140,24 +160,24 @@ int main(int argc, char *argv[])
     {
         cmid[cid].item = cid;
     }
-    printf("y2\n");
+
     // create POSIX threads, p producers and c consumers
-    for (id = 0; id < p; id++)
+    for (id = 0; id < p; id++){
         pthread_create(&producers[id], NULL, producer, (void*) &pcid[id]);
-    for (cid = 0; cid < p; cid++)
-        pthread_create(&consumers[cid], NULL, consumer, (void*) &cmid[id]);
-    printf("y3\n");
+    }
+    for (cid = 0; cid < c; cid++)
+        pthread_create(&consumers[cid], NULL, consumer, (void*) &cmid[cid]);
+
     // wait for all producers and consumers to finish
     for (id = 0; id < p; id++)
         pthread_join(producers[id], NULL);
-    printf("yyy\n");
     for (cid = 0; cid < c; cid++)
         pthread_join(consumers[cid], NULL);
-    printf("y4\n");
+
     // calculate execution time
     gettimeofday(&tv, NULL);
     t2 = tv.tv_sec + tv.tv_usec / 1000000.0;
-    printf("System execution time: %.6lfs.\n", t2 - t1);
+    printf("System execution time: %.6lf seconds\n", t2 - t1);
 
     // free up memory used by the buffer
     free(buffer);
