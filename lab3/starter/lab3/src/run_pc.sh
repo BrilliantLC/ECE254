@@ -28,11 +28,11 @@
 #  tb2_$$.txt: standard deviation of system execution time
 #  where $$ is the pid of process that executing this shell script.
 #############################################################################
-PROG="./produce"
-N="100 398"
-B="4 8"
-P="1 2 3"
-C="1 2 3"
+PROG="./pproduce"
+N="100"
+B="4"
+P="1"
+C="1"
 X=500
 
 exec_producer () 
@@ -79,7 +79,7 @@ gen_data ()
 			do
 				for c in $C
 				do
-					if [ $c == 1 ] || [ $p == 1 ]; then
+					if ([ $c == 1 ] || [ $p == 1 ]); then
 						if !([ $n == 398 -a $b == 4 ]); then
 							exec_producer $PROG $n $b $p $c $X
 						fi

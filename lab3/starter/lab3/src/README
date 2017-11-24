@@ -1,0 +1,8 @@
+Both implementation are written in a single .c file each. Please run
+    $ make -f MakeFile
+, then for multi-processing, run
+    $ ./pproduce N B P C
+, and for multi-threading, run
+    $ ./tproduce N B P C
+. To clean up, run
+    $ make -f MakeFile clean

@@ -5,7 +5,9 @@
         "stdbool.h": "c",
         "mqueue.h": "c",
         "unistd.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "wait.h": "c",
+        "time.h": "c"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

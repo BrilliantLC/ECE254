@@ -31,11 +31,7 @@
             "name": "Linux",
             "includePath": [
                 "/usr/include",
-                "/usr/local/include",
                 "${workspaceRoot}",
-                "/usr/include/x86_64-linux-gnu",
-                "/usr/include/c++/7",
-                "/usr/include/x86_64-linux-gnu/c++/7",
                 "/usr/lib/llvm-4.0/lib/clang/4.0.1/include"
             ],
             "defines": [],
