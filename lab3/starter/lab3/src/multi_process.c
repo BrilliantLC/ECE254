@@ -33,7 +33,6 @@ int sender(int n, int b, int p, int id, mqd_t qdes)
             // such that num % p == id
             num += p;
         }
-
     }
     exit(0);
 }
@@ -70,7 +69,6 @@ int receiver(int n, int cid, mqd_t qdes)
         }
         exit(0);
     }
-
 }
 
 int main(int argc, char *argv[])
@@ -125,7 +123,6 @@ int main(int argc, char *argv[])
 
     // wait for all children to finish
     wait(NULL);
-
 
     // calculate execution time
     gettimeofday(&tv, NULL);

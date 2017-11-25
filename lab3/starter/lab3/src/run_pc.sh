@@ -27,7 +27,7 @@
 #  tb2_$$.txt: standard deviation of system execution time
 #  where $$ is the pid of process that executing this shell script.
 #############################################################################
-PROG="./pproduce"
+PROG="./tproduce"
 N="100 398"
 B="4 8"
 P="1 2 3"

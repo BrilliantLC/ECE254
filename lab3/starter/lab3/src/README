@@ -1,8 +1,15 @@
-Both implementation are written in a single .c file each. Please run
+Both implementation were written in single .c files.
+Please run
     $ make -f MakeFile
-, then for multi-processing, run
+
+then for multi-processing, run
     $ ./pproduce N B P C
-, and for multi-threading, run
+
+and for multi-threading, run
     $ ./tproduce N B P C
-. To clean up, run
+
+To clean up, run
     $ make -f MakeFile clean
+
+Notes:
+    Had some issues with the script "run_pc.sh" so some data in the lab report were calculated manually (c code is fine).
